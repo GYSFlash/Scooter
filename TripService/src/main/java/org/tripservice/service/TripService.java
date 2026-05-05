@@ -9,11 +9,11 @@ import java.util.UUID;
 
 public interface TripService {
     void startTrip(TripStartDto start);
-    void endTrip(TripEndDto end);
-    TripResponseDto getTripById();
-    List<TripResponseDto> getTripsByUser();
+    void endTrip(TripEndDto end, UUID id);
+    TripResponseDto getTripById(UUID id);
+    List<TripResponseDto> getTripsByUser(UUID id);
     List<TripResponseDto> getAllTrips();
-    List<TripResponseDto> getTripsByScooter();
+    List<TripResponseDto> getTripsByScooter(UUID id);
     void deleteTripById(UUID id);
     List<TripResponseDto> getActiveTrips();
 
