@@ -14,4 +14,6 @@ public class UserResponseDto {
     private String surname;
     @NotNull
     private LocalDate dateOfBirth;
+    @NotNull
+    private boolean subscription;
 }

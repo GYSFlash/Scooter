@@ -28,33 +28,20 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public User addUser(UserRequestDto userRequestDto) {
-        try {
-
-
             log.info("Добавление пользователя");
             if (userRequestDto == null) {
                 log.error("Ошибка добавления пустого пользователя");
             }
             userRepository.create(userMapper.toUser(userRequestDto));
             return userMapper.toUser(userRequestDto);
-        }catch (Exception e){
-            log.error("Ошибка добавления пользователя");
-            return null;
-        }
     }
     @Override
     public void deleteUser(UUID id) {
-        try {
             log.info("Удаление пользователя");
             if (id == null) {
                 log.error("Ошибка, пустой id");
             }
-
             userRepository.deleteById(id);
-
-        }catch (Exception e){
-            log.error("Ошибка удаления пользователя");
-        }
     }
     @Override
     public void updateUser(UUID id, UserRequestDto userRequestDto) {
@@ -72,34 +59,25 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public UserResponseDto findUserById(UUID id) {
-        try {
             if (id == null) {
                 log.error("Ошибка, пустой id");
             }
             log.info("Получение пользователя");
             User user = userRepository.findById(id).orElse(null);
             return userMapper.toUserResponseDto(user);
-        }catch (Exception e){
-            log.error("Ошибка получения пользователя");
-            return null;
-        }
     }
     @Override
     public UserResponseDto findUserByEmail(String email) {
-        try {
             if (email == null) {
                 log.error("Ошибка, пустой email");
             }
-            log.info("Получение пользователя");
+            log.info("Получение пользователя по email");
             User user = userRepository.findByEmail(email).orElse(null);
             return userMapper.toUserResponseDto(user);
-        }catch (Exception e){
-            log.error("Ошибка получения пользователя");
-            return null;
-        }
     }
     @Override
     public List<UserResponseDto> findAll() {
+        log.info("Получение всех пользователей");
         return userMapper.toUserResponseDtos(userRepository.findAll());
     }
 }

@@ -1,5 +1,7 @@
 package org.scooterservice.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.scooterservice.dto.StationDto;
 import org.scooterservice.entity.Station;
 import org.scooterservice.mapper.StationMapper;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationServiceImpl implements StationService {
+    private static final Logger log = LogManager.getLogger(StationServiceImpl.class);
     private StationRepository stationRepository;
     private StationMapper mapper;
 
@@ -23,16 +26,19 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public void addStation(StationDto stationDto) {
+        log.info("Добавление новой точки");
         stationRepository.create(mapper.toStation(stationDto));
     }
 
     @Override
     public void deleteStationById(UUID id) {
+        log.info("Удаление точки с id: {}", id);
         stationRepository.deleteById(id);
     }
 
     @Override
     public void updateStation(StationDto stationDto, UUID id) {
+        log.info("Обновление точки с id: {}", id);
         Station station = mapper.toStation(stationDto);
         station.setId(id);
         stationRepository.update(station);
@@ -40,21 +46,25 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public StationDto getStationById(UUID id) {
+        log.info("Получение точки с id: {}", id);
         return mapper.toDto(stationRepository.findById(id).orElse(null));
     }
 
     @Override
     public List<StationDto> getAllStations() {
+        log.info("Получение всех точек");
         return mapper.toStationDtos(stationRepository.findAll());
     }
 
     @Override
     public int countScootersByStation(UUID id) {
+        log.info("Подсчет количества самокатов на точке");
         return stationRepository.countScootersByStation(id);
     }
 
     @Override
     public List<StationDto> nearStation(double userLat, double userLon) {
+        log.info("Получение ближайших точек");
         double radiusKm = 5;
         return stationRepository.findAll().stream()
                 .filter(station -> haversineDistance(userLat, userLon,
@@ -68,6 +78,7 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public String routeForNearStation(double userLat, double userLon) {
+        log.info("Получение маршрута до ближайшей точки");
         return stationRepository.findAll().stream()
                 .min(Comparator.comparingDouble(station ->
                         haversineDistance(userLat, userLon,

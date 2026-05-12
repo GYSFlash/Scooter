@@ -16,5 +16,6 @@ public interface TripService {
     List<TripResponseDto> getTripsByScooter(UUID id);
     void deleteTripById(UUID id);
     List<TripResponseDto> getActiveTrips();
+    int countTripsByUser(UUID id);
 
 }

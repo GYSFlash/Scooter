@@ -1,10 +1,11 @@
 package org.userservice.controller;
 
+import jakarta.validation.Valid;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.userservice.dto.AuthDto;
 import org.userservice.dto.RegisterDto;
 import org.userservice.service.AuthService;
@@ -12,6 +13,7 @@ import org.userservice.service.AuthService;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
+    private static final Logger log = LogManager.getLogger(AuthController.class);
     private AuthService authService;
 
     public AuthController(AuthService authService) {
@@ -19,26 +21,33 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody AuthDto authDto) {
+    public String login(@Valid @RequestBody AuthDto authDto) {
         try{
+            log.info("POST /auth/login");
             return authService.login(authDto);
         }catch (Exception e){
+            log.error("Ошибка авторизации");
             return null;
         }
     }
     @PostMapping("/register")
-    public void register(@RequestBody RegisterDto dto) {
+    public void register(@Valid @RequestBody RegisterDto dto) {
         try{
+            log.info("POST /auth/register");
             authService.register(dto);
            } catch (Exception e){
+               log.error("Ошибка регистрации");
             e.printStackTrace();
         }
     }
-    @PutMapping("/change-pass")
-    public void changePass(@RequestBody AuthDto authDto,@RequestBody String oldPassword) {
+    @PutMapping("/change-pass/{oldPassword}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public void changePass(@Valid @RequestBody AuthDto authDto, @PathVariable String oldPassword) {
         try{
+            log.info("PUT /auth/change-pass");
             authService.updatePassword(authDto,oldPassword);
         } catch (Exception e){
+            log.error("Ошибка смены пароля");
             e.printStackTrace();
         }
     }

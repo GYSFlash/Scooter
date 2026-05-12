@@ -25,4 +25,12 @@ public class TripRepository extends BaseRepository<Trip, UUID>{
         from Trip where scooter_id = :scooter
              """).setParameter("scooter",scooter).list();
     }
+    public int countTripsByUser(UUID user){
+        Long count = getSession().createQuery("""
+                select count(*) from Trip where user_id = :user
+                """, Long.class)
+                .setParameter("user", user)
+                .uniqueResult();
+        return count.intValue();
+    }
 }
